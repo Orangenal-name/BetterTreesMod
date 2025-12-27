@@ -44,10 +44,17 @@ namespace BetterTreesMod
         public static Core bt_Core;
 
         private GameObject VFXsObject;
-        private bool gotPropertyIDs;
+        private bool gotPropertyIDs = false;
 
         public override void OnInitializeMelon()
         {
+            VFXsObject = null;
+            if (!gotPropertyIDs)
+            {
+
+                FLG = Shader.PropertyToID("Leaf Color Gradient");
+                gotPropertyIDs = true;
+            }
             LoggerInstance.Msg("Initialized.");
         }
 
@@ -66,20 +73,14 @@ namespace BetterTreesMod
 
         public override void OnSceneWasLoaded(int buildIndex, string sceneName)
         {
-            VFXsObject = null;
-            if (gotPropertyIDs)
-            {
-
-                FLG = Shader.PropertyToID("Leaf Color Gradient");
-                gotPropertyIDs = true;
-            }
-
-                if (btParentTreeObject == null)
+            if (btParentTreeObject == null)
                 LoadAsset();
+
             for (int i = 0; i < btParentTreeObject.transform.childCount; i++)
             {
                 btParentTreeObject.transform.GetChild(i).gameObject.SetActive(false);
             }
+
             betterLeafObjects.Clear();
             particleSystemRenderers.Clear();
 
@@ -203,7 +204,7 @@ namespace BetterTreesMod
                 }
             }
 
-                    foreach (ParticleSystemRenderer p in particleSystemRenderers)
+            foreach (ParticleSystemRenderer p in particleSystemRenderers)
             {
                 p.material.SetColor("_Color", colorToChangeTo);
             }
