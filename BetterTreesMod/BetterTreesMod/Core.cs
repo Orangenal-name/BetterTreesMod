@@ -19,19 +19,17 @@ namespace BetterTreesMod
         internal static List<GameObject> leafObjects = new List<GameObject>();
         private List<GameObject> rootObjects = new List<GameObject>();
         private List<GameObject> betterLeafObjects = new List<GameObject>();
-        private List<ParticleSystemRenderer> particleSystemRenderers = new List<ParticleSystemRenderer>();
-        public Color bt_Cherry = new Color(0.89f, 0.75f, 0.85f, 1f);
-        public Color bt_Orange = new Color(0.69f, 0.48f, 0.34f, 1f);
-        public Color bt_Leaves = new Color(0.48f, 0.57f, 0.40f, 1f);
-        public Color bt_Red = new Color(0.7f, 0.4f, 0.42f, 1f);
-        public Color bt_Yellow = new Color(0.74f, 0.58f, 0.49f, 1f);
-        public Color bt_selectedColor;
+        private static List<ParticleSystemRenderer> particleSystemRenderers = new List<ParticleSystemRenderer>();
+        public static Color bt_Cherry = new Color(0.89f, 0.75f, 0.85f, 1f);
+        public static Color bt_Orange = new Color(0.69f, 0.48f, 0.34f, 1f);
+        public static Color bt_Leaves = new Color(0.48f, 0.57f, 0.40f, 1f);
+        public static Color bt_Red = new Color(0.7f, 0.4f, 0.42f, 1f);
+        public static Color bt_Yellow = new Color(0.74f, 0.58f, 0.49f, 1f);
+        public static Color bt_selectedColor;
         private int FLG = 1110;
 
         private GameObject btParentTreeObject;
         private GameObject btBasePrefab;
-
-        public static Core bt_Core;
 
         private GameObject VFXsObject;
         private bool gotPropertyIDs = false;
@@ -59,7 +57,6 @@ namespace BetterTreesMod
         {
             if (btParentTreeObject == null)
                 LoadAsset();
-            Core.bt_Core = this;
         }
 
         //Runs when a unity scene is loaded, finds all tree locations and then runs a function to disable the original tree and create a particle system in its place
@@ -196,7 +193,7 @@ namespace BetterTreesMod
             }
         }
 
-        public void BT_UpdateLeafColor(Color colorToChangeTo)
+        public static void BT_UpdateLeafColor(Color colorToChangeTo)
         {
             foreach (ParticleSystemRenderer p in particleSystemRenderers)
             {
@@ -211,7 +208,7 @@ namespace BetterTreesMod
     {
         private static bool Prefix(ref Color colour)
         {
-            Core.bt_Core.BT_UpdateLeafColor(colour);
+            Core.BT_UpdateLeafColor(colour);
             return false;
         }
     }
@@ -230,6 +227,7 @@ namespace BetterTreesMod
             var SwapLightmap = typeof(RumbleTrees.Core).GetMethod("SwapLightmap", BindingFlags.NonPublic | BindingFlags.Instance);
             var selectedLeafMaterial = typeof(RumbleTrees.Core).GetField("selectedLeafMaterial", BindingFlags.NonPublic | BindingFlags.Instance);
             var selectedLeafColour = typeof(RumbleTrees.Core).GetField("selectedLeafColour", BindingFlags.NonPublic | BindingFlags.Instance);
+            MelonLogger.Msg(selectedLeafColour == null);
             var RAINBOWLEAVES = typeof(RumbleTrees.Core).GetMethod("RAINBOWLEAVES", BindingFlags.NonPublic | BindingFlags.Instance);
             if (!(bool)leavesEnabled.GetValue(__instance) && (sceneID == 2 || sceneID == 4))
             {
@@ -240,33 +238,34 @@ namespace BetterTreesMod
                     MelonCoroutines.Start(SwapLightmap.Invoke(__instance, new object[] { sceneName, renderer, false }) as IEnumerator);
                 }
             }
+            MelonLogger.Msg("Got here 3");
             leavesEnabled.SetValue(__instance, true);
             selectedLeafMaterial.SetValue(__instance, "vanilla");
             switch (colour.ToLower())
             {
                 case "cherry":
                     {
-                        selectedLeafColour.SetValue(__instance, Core.bt_Core.bt_Cherry);
+                        selectedLeafColour.SetValue(__instance, Core.bt_Cherry);
                         break;
                     }
                 case "orange":
                     {
-                        selectedLeafColour.SetValue(__instance, Core.bt_Core.bt_Orange);
+                        selectedLeafColour.SetValue(__instance, Core.bt_Orange);
                         break;
                     }
                 case "vanilla":
                     {
-                        selectedLeafColour.SetValue(__instance, Core.bt_Core.bt_Leaves);
+                        selectedLeafColour.SetValue(__instance, Core.bt_Leaves);
                         break;
                     }
                 case "yellow":
                     {
-                        selectedLeafColour.SetValue(__instance, Core.bt_Core.bt_Yellow);
+                        selectedLeafColour.SetValue(__instance, Core.bt_Yellow);
                         break;
                     }
                 case "red":
                     {
-                        selectedLeafColour.SetValue(__instance, Core.bt_Core.bt_Red);
+                        selectedLeafColour.SetValue(__instance, Core.bt_Red);
                         break;
                     }
                 case "rainbow":
@@ -277,6 +276,7 @@ namespace BetterTreesMod
                     }
                     break;
             }
+            MelonLogger.Msg("Got here 4");
             return false;
         }
     }
@@ -305,7 +305,8 @@ namespace BetterTreesMod
 
             string setting = (string)RumbleTreesSettings.Settings[6].SavedValue;
             setSelectedLeafColour.Invoke(instance, new object[] { setting });
-            Core.bt_Core.BT_UpdateLeafColor((Color)selectedLeafColour.GetValue(instance));
+            MelonLogger.Msg("Finished invoke");
+            Core.BT_UpdateLeafColor((Color)selectedLeafColour.GetValue(instance));
         }
     }
 }
