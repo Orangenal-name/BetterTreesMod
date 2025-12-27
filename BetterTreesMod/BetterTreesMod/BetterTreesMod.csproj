@@ -258,8 +258,8 @@
 		<Reference Include="Newtonsoft.Json">
 		  <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\RUMBLE\MelonLoader\net6\Newtonsoft.Json.dll</HintPath>
 		</Reference>
-		<Reference Include="RUMBLECherryBlossoms" Publicize="true">
-		  <HintPath>..\..\..\..\Downloads\Orangenal-RumbleTrees-1.6.1\Mods\RUMBLECherryBlossoms.dll</HintPath>
+		<Reference Include="RumbleTrees" Publicize="true">
+		  <HintPath>..\..\..\..\Downloads\Orangenal-RumbleTrees-1.6.1\Mods\RumbleTrees.dll</HintPath>
 		</Reference>
 		<Reference Include="RumbleModdingAPI">
 		  <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\RUMBLE\Mods\RumbleModdingAPI.dll</HintPath>
